@@ -1,0 +1,5 @@
+BasedOnStyle: Google
+ColumnLimit: 80
+BreakBeforeBraces: Linux
+AllowShortIfStatementsOnASingleLine: false
+IndentCaseLabels: false
