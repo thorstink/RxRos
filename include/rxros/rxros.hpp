@@ -4,7 +4,7 @@
 // ROS
 #include "rclcpp/rclcpp.hpp"
 // Helpers
-#include "helpers.hpp"
+#include "rxros/helpers.hpp"
 
 namespace rxros
 {
@@ -27,18 +27,16 @@ class RxRosSubscriber : public rclcpp::Node
   }
   ~RxRosSubscriber() { s_.on_completed(); }
 
-  void createSub(const std::string& topic_name,
-                 rxcpp::subscriber<std::shared_ptr<T const>>& s)
+  void createTopicSubribtion(const std::string& topic_name,
+                             rxcpp::subscriber<std::shared_ptr<T const>>& s)
   {
     print_pid("subscription created");
-    s_ = s;
+    s_ = std::move(s);
     subscription_ = this->create_subscription<T>(
         topic_name,
         [=](std::shared_ptr<T const> msg) {  //
           if (!s_.is_subscribed()) {  // Stop emitting if nobody is listening
           } else {
-            print_pid("callback!");
-            // s_.on_next(std::const_pointer_cast<T const>(msg));
             s_.on_next(msg);
           }
         },
@@ -47,17 +45,18 @@ class RxRosSubscriber : public rclcpp::Node
 };
 
 template <class T>
-rxcpp::observable<std::shared_ptr<T const>> inline from_event(
+rxcpp::observable<std::shared_ptr<T const>> inline from_topic(
     std::shared_ptr<RxRosSubscriber<T>> node, const std::string& topic_name)
 {
   print_pid("observable created");
   return rxcpp::observable<>::create<std::shared_ptr<T const>>(
              [=](rxcpp::subscriber<std::shared_ptr<T const>> out) {
-               node->createSub(topic_name, out);
+               node->createTopicSubribtion(topic_name, out);
              })
       .publish()
       .ref_count()
-      .as_dynamic();
+      //   .as_dynamic()
+      ;
 }
 
 }  // namespace rxros

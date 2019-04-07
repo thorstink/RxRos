@@ -21,8 +21,8 @@ find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
 # find_package(tf2_ros REQUIRED)
 # find_package(catch2 REQUIRED) 
-
-add_executable(rxros src/main.cpp)
-ament_target_dependencies(rxros rclcpp  std_msgs )
+include_directories(include)
+add_executable(rxros_simple examples/simple.cpp)
+ament_target_dependencies(rxros_simple rclcpp  std_msgs )
 
 ament_package()

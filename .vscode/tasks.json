@@ -15,7 +15,7 @@
         {
             "label": "default run",
             "type": "shell",
-            "command": "./build/rxros/rxros",
+            "command": "./build/rxros/rxros_simple",
             "group": "none",
             "problemMatcher": []
         }
